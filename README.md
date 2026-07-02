@@ -121,6 +121,13 @@ mv style_profile.example.md style_profile.md
 mv content_plan.example.md content_plan.md
 ```
 
+### 或者直接用這個 repo（project skill 已內建）
+
+本 repo 已把 skill 安裝在 `.claude/skills/social-post/`，在這個 repo 目錄裡啟動 Claude Code（或開 Claude Code on the web session）會自動載入，不用另外複製到 `~/.claude/skills/`。
+
+- **來源真相**：`social-post/` 是發佈版原始檔；`.claude/skills/social-post/` 是安裝副本。更新 skill 時改 `social-post/` 後同步複製過去。
+- **個人檔案**：`style_profile.md` / `content_plan.md` 第一次使用時由 Claude 生成（P1 學風格 / P0 排日曆），已列入 `.gitignore` 不會被推上 GitHub。
+
 ### 用
 
 啟動 Claude Code，說：
