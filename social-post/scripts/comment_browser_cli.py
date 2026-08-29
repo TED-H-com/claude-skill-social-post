@@ -18,6 +18,7 @@ from comment_cli_support import (
     SKILL_ROOT, commit_or_preview, load_state, now_iso, read_json_source, require_valid,
 )
 from comment_domain import normalize_reply_event, stable_id
+from comment_store import reserve_comment_submit_claim
 
 
 def _require_live_browser_mutation_enabled(
@@ -173,6 +174,8 @@ def command_browser_begin(args: argparse.Namespace) -> None:
         "preparation_id": preflight["preparation_id"],
     }
     event["browser_submit_claim_id"] = claim["claim_id"]
+    if args.write:
+        reserve_comment_submit_claim(args.root / "data", claim["claim_id"])
     records["replies"].append(event)
     revision = commit_or_preview(
         records, policy, result["revision"],

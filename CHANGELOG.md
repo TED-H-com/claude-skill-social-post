@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.5.1 - 2026-08-29
+
+### Added
+
+- R09 requires independent request identity, state, retry, reconciliation and breaker behavior for each publication platform.
+- Current Instagram server-side Reel media constraints and Facebook long-form API uncertainty are recorded in the platform references.
+- Browser submit claims now reserve a durable `O_EXCL` marker before ledger commit so two Python processes cannot both receive `WRITE_OK` for the same irreversible action.
+
+### Changed
+
+- A failed or ambiguous platform publication no longer stops unrelated platforms or rolls back successful ones.
+
+### Boundary
+
+- Platform limits are transport compatibility facts, not content-quality thresholds. They must not become a cross-platform quality gate.
+
 ## v2.5.0 — 2026-08-28
 
 ### Added

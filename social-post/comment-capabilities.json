@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "release_version": "2.5.0",
-  "source_revision_basis": "release-tag:v2.5.0",
+  "release_version": "2.5.1",
+  "source_revision_basis": "release-tag:v2.5.1",
   "required_obligation_ids": [
     "COMMENT_SCAN_LEDGER",
     "COMMENT_WRITE_AUTHORIZATION",
@@ -18,7 +18,7 @@
       "status": "verified",
       "integration_level": "contract_enforced",
       "scope": ["internal"],
-      "verified_version": "2.5.0",
+      "verified_version": "2.5.1",
       "evidence": [
         "python scripts/comment_self_test.py",
         "scripts/comment_test_browser_contract.py"
@@ -30,7 +30,7 @@
       "status": "verified",
       "integration_level": "contract_enforced",
       "scope": ["internal"],
-      "verified_version": "2.5.0",
+      "verified_version": "2.5.1",
       "evidence": [
         "python scripts/comment_self_test.py",
         "scripts/comment_test_authorization.py",
@@ -43,7 +43,7 @@
       "status": "verified",
       "integration_level": "contract_enforced",
       "scope": ["internal"],
-      "verified_version": "2.5.0",
+      "verified_version": "2.5.1",
       "evidence": [
         "node scripts/comment_chrome_actuator_test.mjs",
         "node scripts/comment_chrome_claim_bridge_test.mjs",
@@ -51,7 +51,8 @@
         "python scripts/comment_self_test.py",
         "scripts/comment_test_browser_policy_gate.py",
         "scripts/comment_chrome_send.mjs",
-        "scripts/comment_chrome_claim_bridge.mjs"
+        "scripts/comment_chrome_claim_bridge.mjs",
+        "scripts/comment_store.py"
       ],
       "live_browser_actuation_enabled_by_default": false,
       "limitation": "Verification is isolated contract evidence; release policy rejects live scan completion and send lifecycle mutations."

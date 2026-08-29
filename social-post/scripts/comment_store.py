@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import hashlib
+import os
+import re
 import shutil
 import tempfile
 from pathlib import Path
@@ -15,6 +17,35 @@ from social_store import exclusive_store_lock, load_jsonl, write_jsonl
 COMMENT_FILENAMES = (
     "comment_events.jsonl", "reply_events.jsonl", "browser_scan_requests.jsonl",
 )
+SUBMIT_CLAIM_ID_RE = re.compile(r"^browser-submit-claim-[0-9a-f]{24}$")
+
+
+def reserve_comment_submit_claim(data_dir: Path, claim_id: str) -> None:
+    """Atomically reserve one irreversible browser submit across processes.
+
+    The optimistic JSONL revision protects ledger content, while this durable
+    O_EXCL marker protects the action boundary itself. A crash may leave a
+    marker that requires reconciliation, which is safer than issuing a second
+    click after an ambiguous first process.
+    """
+    if not isinstance(claim_id, str) or not SUBMIT_CLAIM_ID_RE.fullmatch(claim_id):
+        raise ValueError("browser submit claim id is malformed")
+    claims_dir = data_dir / ".submit-claims"
+    claims_dir.mkdir(parents=True, exist_ok=True)
+    path = claims_dir / claim_id
+    try:
+        descriptor = os.open(
+            path,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+            0o600,
+        )
+    except FileExistsError as exc:
+        raise RuntimeError("browser submit claim is already reserved") from exc
+    try:
+        os.write(descriptor, b"reserved\n")
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
 
 
 def comment_store_revision(data_dir: Path) -> str:

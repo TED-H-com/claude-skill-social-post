@@ -76,6 +76,15 @@
       "source_line": 1,
       "sample_mentions": [],
       "experiment_ids": []
+    },
+    {
+      "id": "R09",
+      "title": "跨平台發布各自提交與復原",
+      "status": "active",
+      "source_file": "references/rules/R09.md",
+      "source_line": 1,
+      "sample_mentions": [],
+      "experiment_ids": []
     }
   ]
 }

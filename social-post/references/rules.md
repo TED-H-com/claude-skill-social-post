@@ -4,7 +4,7 @@
 
 ---
 
-## R1-R8 navigation
+## R1-R9 navigation
 
 每條永久規則已拆成獨立檔案。只讀任務相關的 R，避免一次載入整本規則庫。
 
@@ -18,3 +18,4 @@
 | R6 | 時段先當假設 | active | [R6](rules/R06.md) |
 | R7 | 跨平台快照不得混成單一平台 | active | [R7](rules/R07.md) |
 | R8 | 私人學習與公開方法分離 | active | [R8](rules/R08.md) |
+| R9 | 跨平台發布各自提交與復原 | active | [R9](rules/R09.md) |

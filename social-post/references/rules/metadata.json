@@ -8,6 +8,7 @@
     {"id": "R05", "status": "active", "experiment_ids": []},
     {"id": "R06", "status": "emerging", "experiment_ids": []},
     {"id": "R07", "status": "active", "experiment_ids": []},
-    {"id": "R08", "status": "active", "experiment_ids": []}
+    {"id": "R08", "status": "active", "experiment_ids": []},
+    {"id": "R09", "status": "active", "experiment_ids": []}
   ]
 }

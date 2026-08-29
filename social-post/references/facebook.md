@@ -1,6 +1,6 @@
 # Facebook
 
-> last_verified: 2026-08-24
+> last_verified: 2026-08-29
 > scope: durable workflow only; re-check official product UI and limits before live publishing.
 
 ## Drafting
@@ -13,6 +13,8 @@
 
 - Preview the final copy, audience, media and destination before sending.
 - Live publication needs current-session confirmation.
+- The official server-side Reel collection still documents 9:16, at least 540x960 and 23 fps, with a 4-60 second duration, while Facebook's product announcement says new videos are becoming Reels without length restrictions. Treat long-form API support as unverified and run one isolated canary instead of assuming either statement wins.
+- Persist `video_id` and upload state before the finish call. An ambiguous finish is reconciled against that exact video before any retry.
 - Record the final caption and timestamp in `posts.jsonl`; later insights become new snapshots.
 
 ## Measurement
