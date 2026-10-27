@@ -63,6 +63,8 @@ Copy-Item content_plan.example.md content_plan.md
 | P4 Optimize Patterns | 對齊 maturity 後做跨篇／跨平台比較 |
 | P5 Comment Ops | 以 Chrome 受控掃描、草擬與核准；live 回覆需另經 canary 解鎖 |
 
+對於各平台的發佈與格式限制，請參考 [Platform Formatting Guide](docs/platform-formatting-guide.md)。
+
 ## Comment Ops 快速開始
 
 P5 不串 Meta API，也不匯出 Chrome Cookie 或 session。預設是 `batch_confirm`，不提供 24/7 背景監聽或無邊界的全自動模式。v2.5.0 的 live ledger mutation 另由 default-off kill switch 擋住；即使使用者核准回覆也不會繞過。未來實際掃描與送出還需要執行環境提供 `chrome:control-chrome`、使用者已開啟的 Chrome、既有登入狀態與通過驗證的平台 adapter；目前仍可使用草稿、政策、ledger 與測試功能。
