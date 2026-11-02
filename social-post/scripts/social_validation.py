@@ -138,6 +138,11 @@ def materialize_corrections(
 
 
 def _validate_post(post: dict[str, Any], label: str, post_ids: set[str], errors: list[str], warnings: list[str]) -> None:
+    expected_keys = {"post_id", "published_at", "platforms", "caption", "published_at_confidence", "duration_seconds", "episode_number", "content_type"}
+    unexpected_keys = set(post.keys()) - expected_keys
+    if unexpected_keys:
+        errors.append(f"{label} contains unexpected keys: {sorted(unexpected_keys)}")
+
     for key in ("post_id", "published_at", "platforms", "caption"):
         if key not in post:
             errors.append(f"{label} missing {key}")
@@ -170,8 +175,13 @@ def _validate_post(post: dict[str, Any], label: str, post_ids: set[str], errors:
     episode = post.get("episode_number")
     if episode is not None and (not isinstance(episode, int) or isinstance(episode, bool) or episode < 1):
         errors.append(f"{label} episode_number must be a positive integer")
-    if not isinstance(post.get("caption"), str):
+    caption = post.get("caption")
+    if not isinstance(caption, str):
         errors.append(f"{label} caption must be a string")
+    elif "<script" in caption.lower():
+        errors.append(f"{label} caption contains malicious script tags")
+    elif "password" in caption.lower():
+        errors.append(f"{label} caption contains potential credential exposure")
     content_type = str(post.get("content_type", "")).casefold()
     if duration is None and any(token in content_type for token in ("reel", "video", "short")):
         warnings.append(f"{label} video-like content has no duration_seconds")
