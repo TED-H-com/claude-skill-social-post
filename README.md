@@ -70,6 +70,7 @@ Copy-Item content_plan.example.md content_plan.md
 P5 不串 Meta API，也不匯出 Chrome Cookie 或 session。預設是 `batch_confirm`，不提供 24/7 背景監聽或無邊界的全自動模式。v2.5.0 的 live ledger mutation 另由 default-off kill switch 擋住；即使使用者核准回覆也不會繞過。未來實際掃描與送出還需要執行環境提供 `chrome:control-chrome`、使用者已開啟的 Chrome、既有登入狀態與通過驗證的平台 adapter；目前仍可使用草稿、政策、ledger 與測試功能。
 
 ```powershell
+cd social-post
 $env:PYTHONUTF8='1'
 python scripts/comment_assistant.py validate
 python scripts/comment_assistant.py queue --format json
@@ -80,11 +81,12 @@ node scripts/comment_chrome_claim_bridge_test.mjs
 node scripts/comment_chrome_claim_integration_test.mjs
 ```
 
-實際流程與停損條件見 [`comment-operations.md`](social-post/references/comment-operations.md)，JSON bridge contract 見 [`chrome-comment-adapter.md`](social-post/references/chrome-comment-adapter.md)。定位依當下可見 DOM／accessibility state 建立，不使用一組長期寫死的 Meta selector。所有 ledger command 預設 dry-run，明確加上 `--write` 才會寫入本機。
+實際流程與停損條件見 [`references/comment-operations.md`](social-post/references/comment-operations.md)，JSON bridge contract 見 [`references/chrome-comment-adapter.md`](social-post/references/chrome-comment-adapter.md)。定位依當下可見 DOM／accessibility state 建立，不使用一組長期寫死的 Meta selector。所有 ledger command 預設 dry-run，明確加上 `--write` 才會寫入本機。
 
 ## Outcome 快速開始
 
 ```powershell
+cd social-post
 $env:PYTHONUTF8='1'
 python scripts/log_outcome.py references/outcome-bundle.example.json
 python scripts/self_test.py
@@ -92,7 +94,7 @@ python scripts/social_data.py validate
 python scripts/social_data.py summary --series demo-series
 ```
 
-正式寫入時才加 `--write`。修正既有 event 可參考 [`correction-bundle.example.json`](social-post/references/correction-bundle.example.json)。
+正式寫入時才加 `--write`。修正既有 event 可參考 [`references/correction-bundle.example.json`](social-post/references/correction-bundle.example.json)。
 
 ## 隱私邊界
 
@@ -108,13 +110,14 @@ python scripts/social_data.py summary --series demo-series
 ## 驗證
 
 ```powershell
-python social-post/scripts/self_test.py
-python social-post/scripts/social_data.py validate
-python social-post/scripts/comment_assistant.py validate
-python social-post/scripts/comment_capability_gate.py
-node social-post/scripts/comment_chrome_actuator_test.mjs
-node social-post/scripts/comment_chrome_claim_bridge_test.mjs
-node social-post/scripts/comment_chrome_claim_integration_test.mjs
+cd social-post
+python scripts/self_test.py
+python scripts/social_data.py validate
+python scripts/comment_assistant.py validate
+python scripts/comment_capability_gate.py
+node scripts/comment_chrome_actuator_test.mjs
+node scripts/comment_chrome_claim_bridge_test.mjs
+node scripts/comment_chrome_claim_integration_test.mjs
 ```
 
 ## License

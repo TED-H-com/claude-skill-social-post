@@ -98,6 +98,7 @@ P2 預設讀 `voice_quick.md`；只有 P1 重新學語氣、使用者明確要�
 - 私公版路徑只從 `audit.config.json` 讀；未設定就回報 NOT_CHECKED，不猜 sibling repo。
 
 ```powershell
+cd social-post
 $env:PYTHONUTF8='1'
 python scripts/social_data.py validate
 python scripts/social_data.py summary --series <series-id>

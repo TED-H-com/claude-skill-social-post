@@ -52,6 +52,7 @@ Copy-Item content_plan.example.md content_plan.md
 先複製 example bundle 並換成自己的數據：
 
 ```powershell
+cd social-post
 Copy-Item references/outcome-bundle.example.json my-outcome.json
 python scripts/log_outcome.py my-outcome.json
 ```
@@ -59,6 +60,7 @@ python scripts/log_outcome.py my-outcome.json
 第一個指令只 dry-run。確認內容後才寫入：
 
 ```powershell
+cd social-post
 python scripts/log_outcome.py my-outcome.json --write
 python scripts/social_data.py validate
 ```
@@ -68,10 +70,13 @@ python scripts/social_data.py validate
 ## 6. 比較系列與規則
 
 ```powershell
+cd social-post
 python scripts/social_data.py summary --series your-series-id
 python scripts/build_rule_registry.py --write
 python scripts/self_test.py
 ```
+
+For more details on available tools and CLI options, please see the [API Reference](api-reference.md).
 
 只比較 maturity 接近的快照。若故事、首幀、文案與發布時間一起改變，必須列為 confound，不能稱為乾淨 A/B。
 
