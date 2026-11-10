@@ -7,6 +7,25 @@ from social_validation import (
 )
 
 class TestSocialValidation(unittest.TestCase):
+    def test_input_sanitization_control_chars(self):
+        post = {"post_id": "p1", "published_at": "2026-08-13T10:00:00+08:00", "platforms": ["facebook"], "caption": "Hello\x00World"}
+        errors = []
+        _validate_post(post, "test", set(), errors, [])
+        self.assertTrue(any("invalid control characters" in e for e in errors))
+
+    def test_input_sanitization_url_length(self):
+        long_url = "https://" + "a" * 2000
+        post = {"post_id": "p1", "published_at": "2026-08-13T10:00:00+08:00", "platforms": ["facebook"], "caption": f"Check this out {long_url}"}
+        errors = []
+        _validate_post(post, "test", set(), errors, [])
+        self.assertTrue(any("URL exceeds maximum length" in e for e in errors))
+
+    def test_credential_exposure_prevention(self):
+        post = {"post_id": "p1", "published_at": "2026-08-13T10:00:00+08:00", "platforms": ["facebook"], "caption": "My access_token='abcdefghijk'"}
+        errors = []
+        _validate_post(post, "test", set(), errors, [])
+        self.assertTrue(any("exposed credentials" in e for e in errors))
+
 
     def test_validate_posts(self):
         posts = [

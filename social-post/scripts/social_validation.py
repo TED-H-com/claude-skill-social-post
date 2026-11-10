@@ -7,6 +7,38 @@ import copy
 from datetime import datetime
 from typing import Any
 
+import re
+
+# Same privacy patterns used in audit.config.json and sync_public.py
+PRIVACY_PATTERNS = [
+    re.compile(r"C:[/\\]Users[/\\]", re.IGNORECASE),
+    re.compile(r"(?i)Authorization\s*:\s*Bearer\s+[A-Za-z0-9._~-]{8,}", re.IGNORECASE),
+    re.compile(r"(?i)Cookie\s*:\s*[^;\r\n]{8,}", re.IGNORECASE),
+    re.compile(r"(?i)Chrome[/\\]User Data[/\\](Default|Profile [0-9]+)", re.IGNORECASE),
+    re.compile(r"(?i)(access[_-]?token|session[_-]?token|refresh[_-]?token|client[_-]?secret|api[_-]?key|password)\s*[:=]\s*[\"'][^\"']{8,}[\"']", re.IGNORECASE),
+    re.compile(r"\.(har|trace)$", re.IGNORECASE)
+]
+
+def sanitize_text(text: str) -> str:
+    """Removes invalid control characters and enforces basic length bounds."""
+    if not isinstance(text, str):
+        return text
+    # Remove control characters except newline and tab
+    sanitized = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', text)
+    # Check for exceptionally long URLs
+    words = sanitized.split()
+    for word in words:
+        if word.startswith("http://") or word.startswith("https://"):
+            if len(word) > 2000:
+                raise ValueError("URL exceeds maximum length of 2000 characters")
+    return sanitized
+
+def check_credential_exposure(text: str) -> bool:
+    """Returns True if credential patterns are found in text."""
+    if not isinstance(text, str):
+        return False
+    return any(pattern.search(text) for pattern in PRIVACY_PATTERNS)
+
 
 MATURITY_VALUES = {
     "early", "early_not_plateau", "developing", "near_48h_not_final", "mature", "plateau",
@@ -172,6 +204,15 @@ def _validate_post(post: dict[str, Any], label: str, post_ids: set[str], errors:
         errors.append(f"{label} episode_number must be a positive integer")
     if not isinstance(post.get("caption"), str):
         errors.append(f"{label} caption must be a string")
+    else:
+        try:
+            caption = sanitize_text(post["caption"])
+            if caption != post["caption"]:
+                errors.append(f"{label} caption contains invalid control characters")
+            if check_credential_exposure(post["caption"]):
+                errors.append(f"{label} caption contains exposed credentials")
+        except ValueError as e:
+            errors.append(f"{label} {str(e)}")
     content_type = str(post.get("content_type", "")).casefold()
     if duration is None and any(token in content_type for token in ("reel", "video", "short")):
         warnings.append(f"{label} video-like content has no duration_seconds")
