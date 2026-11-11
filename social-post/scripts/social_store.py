@@ -24,36 +24,40 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.exists():
         return []
     records: list[dict[str, Any]] = []
-    for line_no, raw in enumerate(path.read_text(encoding="utf-8-sig").splitlines(), start=1):
-        if not raw.strip():
-            continue
-        try:
-            value = json.loads(raw)
-        except json.JSONDecodeError as exc:
-            raise ValueError(f"{path.name}:{line_no}: invalid JSON: {exc}") from exc
-        if not isinstance(value, dict):
-            raise ValueError(f"{path.name}:{line_no}: each JSONL row must be an object")
-        records.append(value)
+    with path.open("r", encoding="utf-8-sig") as file_handle:
+        for line_no, raw in enumerate(file_handle, start=1):
+            raw = raw.strip()
+            if not raw:
+                continue
+            try:
+                value = json.loads(raw)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"{path.name}:{line_no}: invalid JSON: {exc}") from exc
+            if type(value) is not dict:
+                raise ValueError(f"{path.name}:{line_no}: each JSONL row must be an object")
+            records.append(value)
     return records
 
 
 def write_jsonl(path: Path, records: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    content = "".join(
-        json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n"
-        for record in records
-    )
-    path.write_text(content, encoding="utf-8")
+    with path.open("w", encoding="utf-8") as file_handle:
+        for record in records:
+            file_handle.write(json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n")
 
 
 def store_revision(data_dir: Path) -> str:
     digest = hashlib.sha256()
     for name in DATA_FILENAMES:
-        path = data_dir / name
         digest.update(name.encode("utf-8"))
         digest.update(b"\0")
-        if path.exists():
-            digest.update(path.read_bytes())
+        path = data_dir / name
+        try:
+            with open(path, "rb") as file_handle:
+                for chunk in iter(lambda: file_handle.read(65536), b""):
+                    digest.update(chunk)
+        except FileNotFoundError:
+            pass
         digest.update(b"\0")
     return digest.hexdigest()
 
